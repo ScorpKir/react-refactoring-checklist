@@ -1,10 +1,10 @@
-# React Refactoring Checklist
+# Чеклист рефакторинга React-проектов
 
-## 1. Component Structure & Organization
+## 1. Организация и структура компонента
 
-- [ ] Break down large components into smaller, reusable ones
+- [ ] Разбивайте большие компоненты на маленькие и переиспользуемые
  ```jsx
-    // Before
+    // Да
     function LargeComponent() {
       return (
         <div>
@@ -15,7 +15,7 @@
       );
     }
   
-    // After
+    // После
     function Header() { ... }
     function Main() { ... }
     function Footer() { ... }
@@ -29,9 +29,9 @@
       );
     }
   ```
-  - [ ] Keep components focused on a single responsibility
+  - [ ] Каждый компонент должен иметь только одну зону ответственности
   ```jsx
-      // Before
+      // До
     function UserProfile({ user, posts }) {
       return (
         <div>
@@ -44,7 +44,7 @@
       );
     }
     
-    // After
+    // После
     function UserInfo({ user }) {
       return (
         <div>
@@ -71,9 +71,9 @@
       );
     }
   ```
-- [ ] Move reusable logic to custom hooks
+- [ ] Перемещайте переиспользуемую логику в хуки
 ```jsx
-  // Before
+  // До
   function Component() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -86,10 +86,10 @@
         .finally(() => setLoading(false));
     }, []);
   
-    // ... rest of the component
+    // ... остальная часть компонента
   }
   å
-  // After
+  // После
   function useFetch(url) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -108,14 +108,14 @@
   
   function Component() {
     const { data, loading, error } = useFetch('https://api.example.com/data');
-    // ... rest of the component
+    // ... остальная часть компонента
   }
 ```
 
-## 2. State Management
-- [ ] Use `useReducer` for complex state logic instead of multiple `useState`
+## 2. Управление состояниями
+- [ ] Используйте `useReducer` для сложной логики состояний вместо нескольких `useState`
 ```jsx
-// Before
+// До
 function Counter() {
   const [count, setCount] = useState(0);
   const [step, setStep] = useState(1);
@@ -124,10 +124,10 @@ function Counter() {
   const decrement = () => setCount(count - step);
   const updateStep = (newStep) => setStep(newStep);
 
-  // ... rest of the component
+  // ... остальная часть компонента
 }
 
-// After
+// После
 function counterReducer(state, action) {
   switch (action.type) {
     case 'INCREMENT':
@@ -148,31 +148,31 @@ function Counter() {
   const decrement = () => dispatch({ type: 'DECREMENT' });
   const updateStep = (newStep) => dispatch({ type: 'SET_STEP', payload: newStep });
 
-  // ... rest of the component
+  // ... остальная часть компонента
 }
 ```
-- [ ] Memoize expensive computations with `useMemo`
+- [ ] Кешируйте дорогостоящие вычисления с помощью `useMemo`
 ```jsx
-// Before
+// До
 function ExpensiveComponent({ data }) {
   const expensiveResult = expensiveCalculation(data);
   return <div>{expensiveResult}</div>;
 }
 
-// After
+// После
 function ExpensiveComponent({ data }) {
   const expensiveResult = useMemo(() => expensiveCalculation(data), [data]);
   return <div>{expensiveResult}</div>;
 }
 ```
-- [ ] Prevent re-renders with `React.memo` (use it carefully, more on this later.)
+- [ ] Предотвращайте ре-рендеры компонента с помощью `React.memo` (Используйте это с осторожностью. Больше об этом ниже.)
 ```jsx
-// Before
+// До
 function MyComponent({ value }) {
   return <div>{value}</div>;
 }
 
-// After
+// После
 const MyComponent = React.memo(function MyComponent({ value }) {
   return <div>{value}</div>;
 });
